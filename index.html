@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirecting...</title>
+<script>
+
+        function getQueryParam(param) {
+
+            return new URLSearchParams(window.location.search).get(param) || "";
+
+        }
+ 
+        function detectDevice() {
+
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            return {
+
+                isAndroid: /android/i.test(userAgent),
+
+                isIOS: /iPad|iPhone|iPod/.test(userAgent),
+
+            };
+
+        }
+ 
+        function openFallback(isIOS, isAndroid) {
+
+            if (isIOS) {
+
+                window.location.href = "https://apps.apple.com/us/app/claimtoolkit/id6742053471";
+
+            } else if (isAndroid) {
+
+                window.location.href = "intent://details?id=com.claimtoolkit#Intent;scheme=market;package=com.android.vending;end";
+
+            }
+
+        }
+ 
+        function redirectToApp() {
+
+            var investigatorId = getQueryParam("investigatorId");
+
+            var companyId = getQueryParam("companyId");
+
+            var token = getQueryParam("token");
+ 
+            var appLink = "claimtoolkit://open?";
+
+            var params = [];
+
+            
+
+            if (token) {
+
+                params.push(`token=${token}`);
+
+            } else {
+
+                if (investigatorId) params.push(`investigatorId=${investigatorId}`);
+
+                if (companyId) params.push(`companyId=${companyId}`);
+
+            }
+
+            
+
+            appLink += params.join("&");
+ 
+            var { isAndroid, isIOS } = detectDevice();
+
+            var isMobile = isAndroid || isIOS;
+ 
+            if (!isMobile) {
+
+                document.getElementById("message").textContent = "Please open this link on your mobile device (iOS or Android)";
+
+                return;
+
+            }
+ 
+            var now = Date.now();
+
+            var fallbackTriggered = false;
+ 
+            function attemptFallback() {
+
+                if (!fallbackTriggered && Date.now() - now < 200) {
+
+                    fallbackTriggered = true;
+
+                    openFallback(isIOS, isAndroid);
+
+                }
+
+            }
+ 
+            if (isAndroid) {
+
+                document.addEventListener("visibilitychange", function () {
+
+                    if (document.hidden) fallbackTriggered = true;
+
+                });
+
+            }
+ 
+            window.location.href = appLink;
+ 
+            setTimeout(() => {
+
+                if (isIOS) {
+
+                    attemptFallback();
+
+                } else if (isAndroid && !document.hidden) {
+
+                    openFallback(isIOS, isAndroid);
+
+                }
+
+            }, isIOS ? 0 : 1500);
+
+        }
+</script>
+</head>
+<body onload="redirectToApp()">
+<p id="message">Redirecting to ClaimToolkit...</p>
+</body>
+</html>
+ 
