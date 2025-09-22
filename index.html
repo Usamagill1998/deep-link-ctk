@@ -95,15 +95,11 @@
                 console.log('🌐 HTML - Original token:', '"' + token + '"');
                 console.log('🌐 HTML - Token length:', token.length);
                 console.log('🌐 HTML - Token ends with +:', token.endsWith('+'));
-                console.log('🌐 HTML - Token last 10 chars:', '"' + token.slice(-10) + '"');
                 
-                // Properly encode the token for the app link
-                // We need to encode it so React Native receives it correctly
-                var encodedToken = encodeURIComponent(token);
-                console.log('🌐 HTML - Encoded token for app:', '"' + encodedToken + '"');
-                console.log('🌐 HTML - Encoded token length:', encodedToken.length);
-                
-                params.push(`token=${encodedToken}`);
+                // The token is already properly decoded from the URL
+                // Don't encode it again - React Native Linking will handle URL encoding automatically
+                // This prevents double-encoding which corrupts + and = characters
+                params.push(`token=${token}`);
 
             } else {
 
