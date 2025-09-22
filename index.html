@@ -7,9 +7,45 @@
 <script>
 
         function getQueryParam(param) {
-
-            return new URLSearchParams(window.location.search).get(param) || "";
-
+            console.log('🌐 HTML - Getting query param:', param);
+            console.log('🌐 HTML - Full URL:', window.location.href);
+            console.log('🌐 HTML - Search part:', window.location.search);
+            
+            // For token parameter, we need to manually parse to preserve + characters
+            if (param === 'token') {
+                console.log('🌐 HTML - TOKEN PARAMETER - Using manual parsing to preserve + characters');
+                
+                const search = window.location.search.substring(1); // Remove the '?'
+                const pairs = search.split('&');
+                
+                for (let pair of pairs) {
+                    const [key, value] = pair.split('=');
+                    if (key === 'token') {
+                        // Manually decode, but preserve + as actual + characters
+                        let decodedValue = decodeURIComponent(value);
+                        
+                        console.log('🌐 HTML - Raw token value from URL:', '"' + value + '"');
+                        console.log('🌐 HTML - Decoded token value:', '"' + decodedValue + '"');
+                        console.log('🌐 HTML - Token length:', decodedValue.length);
+                        console.log('🌐 HTML - Token ends with +:', decodedValue.endsWith('+'));
+                        console.log('🌐 HTML - Token last 5 chars:', '"' + decodedValue.slice(-5) + '"');
+                        
+                        return decodedValue;
+                    }
+                }
+                
+                console.log('🌐 HTML - Token not found in URL');
+                return "";
+            } else {
+                // For non-token parameters, use normal URLSearchParams
+                const urlParams = new URLSearchParams(window.location.search);
+                const value = urlParams.get(param) || "";
+                
+                console.log('🌐 HTML - Retrieved value for', param + ':', '"' + value + '"');
+                console.log('🌐 HTML - Value length:', value.length);
+                
+                return value;
+            }
         }
  
         function detectDevice() {
@@ -55,8 +91,19 @@
             
 
             if (token) {
-
-                params.push(`token=${encodeURIComponent(token)}`);
+                console.log('🌐 HTML - Processing token for app link');
+                console.log('🌐 HTML - Original token:', '"' + token + '"');
+                console.log('🌐 HTML - Token length:', token.length);
+                console.log('🌐 HTML - Token ends with +:', token.endsWith('+'));
+                console.log('🌐 HTML - Token last 10 chars:', '"' + token.slice(-10) + '"');
+                
+                // Properly encode the token for the app link
+                // We need to encode it so React Native receives it correctly
+                var encodedToken = encodeURIComponent(token);
+                console.log('🌐 HTML - Encoded token for app:', '"' + encodedToken + '"');
+                console.log('🌐 HTML - Encoded token length:', encodedToken.length);
+                
+                params.push(`token=${encodedToken}`);
 
             } else {
 
@@ -69,6 +116,8 @@
             
 
             appLink += params.join("&");
+
+            console.log('🌐 HTML - Final app link:', '"' + appLink + '"');
  
             var { isAndroid, isIOS } = detectDevice();
 
