@@ -56,13 +56,13 @@
 
             if (token) {
 
-                params.push(`token=${token}`);
+                params.push(`token=${encodeURIComponent(token)}`);
 
             } else {
 
-                if (investigatorId) params.push(`investigatorId=${investigatorId}`);
+                if (investigatorId) params.push(`investigatorId=${encodeURIComponent(investigatorId)}`);
 
-                if (companyId) params.push(`companyId=${companyId}`);
+                if (companyId) params.push(`companyId=${encodeURIComponent(companyId)}`);
 
             }
 
