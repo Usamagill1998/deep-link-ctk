@@ -11,33 +11,33 @@
             console.log('🌐 HTML - Full URL:', window.location.href);
             console.log('🌐 HTML - Search part:', window.location.search);
             
-            // For token parameter, we need to manually parse to preserve + characters
-            if (param === 'token') {
-                console.log('🌐 HTML - TOKEN PARAMETER - Using manual parsing to preserve + characters');
+            // For secure parameter, we need to manually parse to preserve + characters
+            if (param === 'secure') {
+                console.log('🌐 HTML - SECURE PARAMETER - Using manual parsing to preserve + characters');
                 
                 const search = window.location.search.substring(1); // Remove the '?'
                 const pairs = search.split('&');
                 
                 for (let pair of pairs) {
                     const [key, value] = pair.split('=');
-                    if (key === 'token') {
+                    if (key === 'secure') {
                         // Manually decode, but preserve + as actual + characters
                         let decodedValue = decodeURIComponent(value);
                         
-                        console.log('🌐 HTML - Raw token value from URL:', '"' + value + '"');
-                        console.log('🌐 HTML - Decoded token value:', '"' + decodedValue + '"');
-                        console.log('🌐 HTML - Token length:', decodedValue.length);
-                        console.log('🌐 HTML - Token ends with +:', decodedValue.endsWith('+'));
-                        console.log('🌐 HTML - Token last 5 chars:', '"' + decodedValue.slice(-5) + '"');
+                        console.log('🌐 HTML - Raw secure value from URL:', '"' + value + '"');
+                        console.log('🌐 HTML - Decoded secure value:', '"' + decodedValue + '"');
+                        console.log('🌐 HTML - Secure length:', decodedValue.length);
+                        console.log('🌐 HTML - Secure ends with +:', decodedValue.endsWith('+'));
+                        console.log('🌐 HTML - Secure last 5 chars:', '"' + decodedValue.slice(-5) + '"');
                         
                         return decodedValue;
                     }
                 }
                 
-                console.log('🌐 HTML - Token not found in URL');
+                console.log('🌐 HTML - Secure not found in URL');
                 return "";
             } else {
-                // For non-token parameters, use normal URLSearchParams
+                // For non-secure parameters, use normal URLSearchParams
                 const urlParams = new URLSearchParams(window.location.search);
                 const value = urlParams.get(param) || "";
                 
@@ -82,7 +82,7 @@
 
             var companyId = getQueryParam("companyId");
 
-            var token = getQueryParam("token");
+            var secure = getQueryParam("secure");
  
             var appLink = "claimtoolkit://open?";
 
@@ -90,16 +90,16 @@
 
             
 
-            if (token) {
-                console.log('🌐 HTML - Processing token for app link');
-                console.log('🌐 HTML - Original token:', '"' + token + '"');
-                console.log('🌐 HTML - Token length:', token.length);
-                console.log('🌐 HTML - Token ends with +:', token.endsWith('+'));
+            if (secure) {
+                console.log('🌐 HTML - Processing secure for app link');
+                console.log('🌐 HTML - Original secure:', '"' + secure + '"');
+                console.log('🌐 HTML - Secure length:', secure.length);
+                console.log('🌐 HTML - Secure ends with +:', secure.endsWith('+'));
                 
-                // The token is already properly decoded from the URL
+                // The secure is already properly decoded from the URL
                 // Don't encode it again - React Native Linking will handle URL encoding automatically
                 // This prevents double-encoding which corrupts + and = characters
-                params.push(`token=${token}`);
+                params.push(`secure=${secure}`);
 
             } else {
 
