@@ -19,7 +19,13 @@
                 const pairs = search.split('&');
                 
                 for (let pair of pairs) {
-                    const [key, value] = pair.split('=');
+                    // Use indexOf to find the first '=' to properly handle values that contain '='
+                    const equalIndex = pair.indexOf('=');
+                    if (equalIndex === -1) continue;
+                    
+                    const key = pair.substring(0, equalIndex);
+                    const value = pair.substring(equalIndex + 1); // This preserves any '=' in the value
+                    
                     if (key === 'secure') {
                         // Manually decode, but preserve + as actual + characters
                         let decodedValue = decodeURIComponent(value);
